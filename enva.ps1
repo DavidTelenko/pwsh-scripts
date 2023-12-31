@@ -35,8 +35,10 @@ if (-not $Path) {
 $Path = $Path -replace '/', '\'
 
 $currentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::Machine)
+$currentPath = $currentPath.TrimEnd(';')
 
-$inPath = $currentPath -split ';' -contains $path
+$splitPath = $currentPath -split ';'
+$inPath = $splitPath -contains $path
 
 if ($Remove) {
     if (-not $inPath) {
@@ -45,7 +47,7 @@ if ($Remove) {
     }
 
     # Remove the specified path from the existing PATH variable
-    $newPath = ($currentPath -split ';' | Where-Object { $_ -ne $path }) -join ';'
+    $newPath = ($splitPath | Where-Object { $_ -ne $path }) -join ';'
     $action = "removed"
 } else {
     if ($inPath) {
@@ -54,7 +56,7 @@ if ($Remove) {
     }
 
     # Add the new path to the existing PATH variable, ensuring no extra semicolons
-    $newPath = $currentPath.TrimEnd(';') + ";" + $path
+    $newPath = $currentPath + ";" + $path
     $action = "added"
 }
 
