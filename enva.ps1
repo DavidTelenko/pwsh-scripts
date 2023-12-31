@@ -1,3 +1,6 @@
+# Script to add path to PATH env variable.
+# There is a lot of solutions for this problems, but not a single build in.
+
 param (
     [string]$path,
     [switch]$remove
