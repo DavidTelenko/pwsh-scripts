@@ -1,0 +1,1 @@
+wmic logicaldisk list brief
