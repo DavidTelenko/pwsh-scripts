@@ -1,22 +1,44 @@
-# Script to add path to PATH env variable.
-# There is a lot of solutions for this problems, but not a single build in.
+<#
+.SYNOPSIS
+    This script adds or Removes a Path from the PATH environment variable.
+
+.DESCRIPTION
+    This script allows you to add or Remove a specified Path from the PATH environment variable.
+    It provides the flexibility to choose the action using the -r (Remove) switch.
+
+.PARAMETER Path
+    Specifies the path to be added or removed from the PATH variable.
+
+.PARAMETER Remove
+    If specified, the script will remove the specified path from the PATH variable.
+
+.EXAMPLE
+    .\enva.ps1 -Path "C:\Your\Path\Here"
+    Adds the specified path to the PATH variable.
+
+.EXAMPLE
+    .\enva.ps1 -Path "C:\Path\To\Remove" -Remove
+    Removes the specified path from the PATH variable.
+#>
 
 param (
-    [string]$path,
-    [switch]$remove
+    [string]$Path,
+    [switch]$Remove
 )
 
 # Guard clause: Check if path is not provided
-if (-not $path) {
+if (-not $Path) {
     Write-Host "Please provide a valid path."
     return
 }
+
+$Path = $Path -replace '/', '\'
 
 $currentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::Machine)
 
 $inPath = $currentPath -split ';' -contains $path
 
-if ($remove) {
+if ($Remove) {
     if (-not $inPath) {
         Write-Host "Path is not present in the PATH variable. No changes made."
         return
@@ -36,8 +58,8 @@ if ($remove) {
     $action = "added"
 }
 
-[System.Environment]::SetEnvironmentVariable('PATH', $newPath, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('Path', $newPath, [System.EnvironmentVariableTarget]::Machine)
 
-Write-Host "Path $action successfully."
+Write-Host "Path '$Path' $action successfully."
 
 refreshenv
